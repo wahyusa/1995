@@ -45,7 +45,7 @@ func main() {
         env = append(env, "GIT_AUTHOR_DATE="+datestr, "GIT_COMMITTER_DATE="+datestr)
 
         // make a trivial change: append the date to a file
-        file := filepath.Join(*repoDir, "backdate.log")
+        file := filepath.Join(*repoDir, "SOMETHING.md")
         f, err := os.OpenFile(file, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0o644)
         if err != nil {
             panic(err)
@@ -54,12 +54,9 @@ func main() {
         f.Close()
 
         // git add
-        cmd := exec.Command("git", "-C", *repoDir, "add", "backdate.log")
-        cmd.Env = env
-        if out, err := cmd.CombinedOutput(); err != nil {
-            fmt.Printf("git add error: %s\n%s\n", err, out)
-            os.Exit(1)
-        }
+cmd := exec.Command("git", "-C", *repoDir,
+    "commit", "-S", "--only", "SOMETHING.md", "-m", commitMsg,
+)
 
         // git commit -S
         commitMsg := fmt.Sprintf("%s: %s", *msg, datestr[:10])
